@@ -4,7 +4,8 @@ QT -= gui
 TARGET = essentialQtso
 TEMPLATE = lib
 
-QMAKE_CXXFLAGS += -std=c++17
+!android:QMAKE_CXXFLAGS += -std=c++17
+android:CONFIG += c++14
 CONFIG += no_keywords plugin
 
 # The following define makes your compiler emit warnings if you use
@@ -31,15 +32,13 @@ QMAKE_CXXFLAGS_DEBUG -= -g
 QMAKE_CXXFLAGS_DEBUG += -pedantic -Wall -Wextra -g3
 
 #if not win32, add flto, mingw (on msys2) can't handle lto
-unix:QMAKE_CXXFLAGS_RELEASE += -flto=jobserver
-#qt QMAKE defaults strike again, adds -mtune=core2 just because in win32
-win32:QMAKE_CXXFLAGS -= -mtune=core2
-QMAKE_CXXFLAGS_RELEASE += -mtune=sandybridge
+linux:QMAKE_CXXFLAGS_RELEASE += -flto=jobserver
+!android:QMAKE_CXXFLAGS_RELEASE += -mtune=sandybridge
 
 #for -flto=jobserver in the link step to work with -j4
-unix:QMAKE_LINK = +g++
+linux:!android:QMAKE_LINK = +g++
 
-unix:QMAKE_LFLAGS += -fuse-ld=gold
+linux:QMAKE_LFLAGS += -fuse-ld=gold
 QMAKE_LFLAGS_RELEASE += -fvisibility=hidden
 #if not win32, add flto, mingw (on msys2) can't handle lto
-unix:QMAKE_LFLAGS_RELEASE += -flto=jobserver
+linux:QMAKE_LFLAGS_RELEASE += -flto=jobserver
