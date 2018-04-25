@@ -29,8 +29,8 @@ extern QMutex& qtOutMutexRef_glo();
 extern QString configFileDefaultPath_f();
 
 //check for the config file (updates configFile_f):
-//1 if firstArgument_par_con = true, the first argument will be check if it's a file and exists
-//2 if firstArgument_par_con = false, it will check for --configFile="somepath"
+//1 if checkFirstArgument_par_con = true, the first argument will be check if it's a file and exists
+//2 if checkFirstArgument_par_con = false, it will check for --configFile="somepath"
 //3 otherwise configFileDefaultPath_f will be checked
 //it's NOT check if the file is a valid config file, just checks existence
 extern void locateConfigFilePath_f(
