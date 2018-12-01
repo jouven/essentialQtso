@@ -46,7 +46,7 @@ QMutex& qtOutMutexRef_glo()
 
 std::pair<QString, bool> configFile_ext(QString(), false);
 
-QString configFileDefaultPath_f()
+QString appBaseFilePath_f()
 {
     //the way android deploys programs, APK, AFAIK it's pretty railroaded,
     //The "executable", which is a .so file, ends on a "library" folder and doesn't allow writing...
@@ -57,10 +57,36 @@ QString configFileDefaultPath_f()
     //I don't know if just copying libraries and launching is feasible like on windows/*nix because
     //C++ on android works by proxy loading and external library in Java
 #ifdef __ANDROID__
-    return QDir::currentPath() + "/" + QCoreApplication::applicationName() + "_config.json";
+    return QDir::currentPath() + "/" + QCoreApplication::applicationName();
 #else
-    return QCoreApplication::applicationDirPath() + "/" + QCoreApplication::applicationName() + "_config.json";
+    return QCoreApplication::applicationDirPath() + "/" + QCoreApplication::applicationName();
 #endif
+}
+
+QString fileTypeExtension_f(const fileTypes_ec fileType_par_con)
+{
+    QString resultTmp;
+    if (fileType_par_con == fileTypes_ec::empty)
+    {
+    }
+    else
+    {
+        resultTmp = typesToExtensionUMap_glo_sta_con.at(fileType_par_con);
+    }
+    return resultTmp;
+}
+
+QString fileTypePath_f(const fileTypes_ec fileType_par_con)
+{
+    QString resultTmp;
+    if (fileType_par_con == fileTypes_ec::empty)
+    {
+    }
+    else
+    {
+        resultTmp = appBaseFilePath_f() + "_" + typesToNamesUMap_glo_sta_con.at(fileType_par_con) + typesToExtensionUMap_glo_sta_con.at(fileType_par_con);
+    }
+    return resultTmp;
 }
 
 void locateConfigFilePath_f(
@@ -69,6 +95,7 @@ void locateConfigFilePath_f(
 {
     QString configFilePathOrErrorStr;
     bool configFileFound(false);
+    constexpr fileTypes_ec fileTypeTmp_constexpr(fileTypes_ec::config);
 
     //first argument case
     if (checkFirstArgument_par_con)
@@ -122,13 +149,13 @@ void locateConfigFilePath_f(
 
     if (not configFileFound)
     {
-        if (not QFile::exists(configFileDefaultPath_f()))
+        if (not QFile::exists(fileTypePath_f(fileTypeTmp_constexpr)))
         {
-            configFilePathOrErrorStr.append("Config file path doesn't exist " + configFileDefaultPath_f());
+            configFilePathOrErrorStr.append("Config file path doesn't exist " + fileTypePath_f(fileTypeTmp_constexpr));
         }
         else
         {
-            configFilePathOrErrorStr = configFileDefaultPath_f();
+            configFilePathOrErrorStr = fileTypePath_f(fileTypeTmp_constexpr);
             configFileFound = true;
         }
     }
@@ -139,5 +166,7 @@ std::pair<QString, bool> configFilePath_f()
 {
     return configFile_ext;
 }
+
+
 
 

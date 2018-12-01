@@ -20,10 +20,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    essentialQt.cpp
+    essentialQt.cpp \
+    filenaming.cpp
 
 HEADERS += \
-    essentialQt.hpp
+    essentialQt.hpp \
+    filenaming.hpp \
+    macros.hpp
 
 !win32:MYPATH = "/"
 win32:MYPATH = "H:/veryuseddata/portable/msys64/"

@@ -1,0 +1,6 @@
+#ifndef ESSENTIALQTSO_MACROS_HPP
+#define ESSENTIALQTSO_MACROS_HPP
+
+#define QSTRINGBOOL(BOOL) QString(BOOL ? "true" : "false")
+
+#endif // ESSENTIALQTSO_MACROS_HPP
