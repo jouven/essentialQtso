@@ -27,11 +27,16 @@ extern QMutex& qtOutMutexRef_glo();
 
 //extern QTimer* qtCycleRef_ext;
 
+//windows/*nix same as QCoreApplication::applicationDirPath()
+//in android QDir::currentPath(), since the "executable" in android is in a non-writable path
+//return the path from where there program is called
+extern QString appDirectoryPath_f();
+//above + + "/" + QCoreApplication::applicationName()
 //base file name-path for the process/application,
 //i.e /a/random/path/applicationname
-//this is to be used to save additional files
-// related to the process/application (configFileDefaultPath_f uses it)
-extern QString appBaseFilePath_f();
+//used to load/save additional files
+//configFileDefaultPath_f uses it
+extern QString appFilePath_f();
 
 //return value example: config --> ".json"
 extern QString fileTypeExtension_f(const fileTypes_ec fileType_par_con);

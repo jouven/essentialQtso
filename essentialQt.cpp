@@ -46,7 +46,7 @@ QMutex& qtOutMutexRef_glo()
 
 std::pair<QString, bool> configFile_ext(QString(), false);
 
-QString appBaseFilePath_f()
+QString appDirectoryPath_f()
 {
     //the way android deploys programs, APK, AFAIK it's pretty railroaded,
     //The "executable", which is a .so file, ends on a "library" folder and doesn't allow writing...
@@ -57,10 +57,15 @@ QString appBaseFilePath_f()
     //I don't know if just copying libraries and launching is feasible like on windows/*nix because
     //C++ on android works by proxy loading and external library in Java
 #ifdef __ANDROID__
-    return QDir::currentPath() + "/" + QCoreApplication::applicationName();
+    return QDir::currentPath();
 #else
-    return QCoreApplication::applicationDirPath() + "/" + QCoreApplication::applicationName();
+    return QCoreApplication::applicationDirPath();
 #endif
+}
+
+QString appFilePath_f()
+{
+    return appDirectoryPath_f() + "/" + QCoreApplication::applicationName();
 }
 
 QString fileTypeExtension_f(const fileTypes_ec fileType_par_con)
@@ -84,7 +89,7 @@ QString fileTypePath_f(const fileTypes_ec fileType_par_con)
     }
     else
     {
-        resultTmp = appBaseFilePath_f() + "_" + typesToNamesUMap_glo_sta_con.at(fileType_par_con) + typesToExtensionUMap_glo_sta_con.at(fileType_par_con);
+        resultTmp = appFilePath_f() + "_" + typesToNamesUMap_glo_sta_con.at(fileType_par_con) + typesToExtensionUMap_glo_sta_con.at(fileType_par_con);
     }
     return resultTmp;
 }
