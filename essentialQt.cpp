@@ -76,7 +76,7 @@ QString fileTypeExtension_f(const fileTypes_ec fileType_par_con)
     }
     else
     {
-        resultTmp = typesToExtensionUMap_glo_sta_con.at(fileType_par_con);
+        resultTmp = typesToExtensionUMap_ext_con.at(fileType_par_con);
     }
     return resultTmp;
 }
@@ -89,7 +89,7 @@ QString fileTypePath_f(const fileTypes_ec fileType_par_con)
     }
     else
     {
-        resultTmp = appFilePath_f() + "_" + typesToNamesUMap_glo_sta_con.at(fileType_par_con) + typesToExtensionUMap_glo_sta_con.at(fileType_par_con);
+        resultTmp = appFilePath_f() + "_" + typesToNamesUMap_ext_con.at(fileType_par_con) + typesToExtensionUMap_ext_con.at(fileType_par_con);
     }
     return resultTmp;
 }

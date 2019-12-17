@@ -6,7 +6,15 @@
 { \
     STRPTR->append(MSG); \
 }
+#define APPENDTEXTPTR(TEXTCOMPILATIONPTR, MSG) if (TEXTCOMPILATIONPTR not_eq nullptr) \
+{ \
+    TEXTCOMPILATIONPTR->append_f(MSG); \
+}
 #define IFERRORSTRPTRNOTEMPTYBREAK(STRPTR) if (not STRPTR->isEmpty()) \
+{ \
+    break; \
+}
+#define IFERRORTEXTPTRNOTEMPTYBREAK(TEXTPTR) if (not TEXTPTR->empty_f()) \
 { \
     break; \
 }

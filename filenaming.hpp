@@ -20,10 +20,10 @@ enum class fileTypes_ec
 };
 
 //values are camelcase
-extern EXPIMP_ESSENTIALQTSO const std::unordered_map<fileTypes_ec, QString> typesToNamesUMap_glo_sta_con;
+extern EXPIMP_ESSENTIALQTSO const std::unordered_map<fileTypes_ec, QString> typesToNamesUMap_ext_con;
 
 //extensions start with a dot i.e. ".log"
-extern EXPIMP_ESSENTIALQTSO const std::unordered_map<fileTypes_ec, QString> typesToExtensionUMap_glo_sta_con;
+extern EXPIMP_ESSENTIALQTSO const std::unordered_map<fileTypes_ec, QString> typesToExtensionUMap_ext_con;
 
 #endif // ESSENTIALQTSO_FILENAMING_HPP
 
