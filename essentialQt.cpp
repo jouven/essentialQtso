@@ -1,39 +1,115 @@
 #include "essentialQt.hpp"
 
+#include <QCoreApplication>
 #include <QFile>
 #ifdef __ANDROID__
 #include <QDir>
 #endif
 
+#include <QTimer>
+
 int returnValue_ext = 0;
 
-//void qtCout_f(const QString &msg_par_con, const bool addEndl_par_con)
-//{
-//    static QMutex tmp;
-//    tmp.lock();
-//    if (addEndl_par_con)
-//    {
-//        qtOutRef_ext() << msg_par_con << endl;
-//    }
-//    else
-//    {
-//        qtOutRef_ext() << msg_par_con;
-//    }
-//    tmp.unlock();
-//}
-
-QTextStream& qtOutRef_ext()
+//Connect the stdout to my qout textstream
+QTextStream& qtStdout_f()
 {
-    //Connect the stdout to my qout textstream
     static QTextStream qout_glo(stdout);
     return qout_glo;
 }
 
-QTextStream& qtErrRef_ext()
+void flushQtStdout_f()
+{
+    qtStdout_f().flush();
+}
+
+QTimer* stdoutflushTimerPtr(nullptr);
+void flushQtStdoutTimer_f()
+{
+    if (stdoutflushTimerPtr == nullptr)
+    {
+        stdoutflushTimerPtr = new QTimer(qApp);
+        stdoutflushTimerPtr->setSingleShot(true);
+        QObject::connect(stdoutflushTimerPtr, &QTimer::timeout, flushQtStdout_f);
+        stdoutflushTimerPtr->start(1000);
+    }
+    else
+    {
+        stdoutflushTimerPtr->start(1000);
+    }
+}
+
+bool stdoutLastCharacterPrintedWasNewLine(true);
+void qtOut_f(const QString& text_par_con)
+{
+    qtStdout_f() << text_par_con;
+    stdoutLastCharacterPrintedWasNewLine = text_par_con.endsWith('\n');
+    flushQtStdoutTimer_f();
+}
+
+void addNewLineToText_f(QString& text_par)
+{
+    if (stdoutLastCharacterPrintedWasNewLine and text_par.startsWith('\n'))
+    {
+        text_par.remove(0,1);
+    }
+    if (not stdoutLastCharacterPrintedWasNewLine and not text_par.startsWith('\n'))
+    {
+        text_par.prepend('\n');
+    }
+}
+
+void qtOutLine_f(const QString& text_par_con)
+{
+    QString textTmp(text_par_con);
+    addNewLineToText_f(textTmp);
+    qtStdout_f() << textTmp;
+    stdoutLastCharacterPrintedWasNewLine = text_par_con.endsWith('\n');
+    flushQtStdoutTimer_f();
+}
+
+QTextStream& qtStderr_f()
 {
     //Connect the stderr to my qerr textstream
     static QTextStream qerr_glo(stderr);
     return qerr_glo;
+}
+
+void flushQtStderr_f()
+{
+    qtStderr_f().flush();
+}
+
+QTimer* stderrflushTimerPtr(nullptr);
+void flushQtStderrTimer_f()
+{
+    if (stderrflushTimerPtr == nullptr)
+    {
+        stderrflushTimerPtr = new QTimer(qApp);
+        stderrflushTimerPtr->setSingleShot(true);
+        QObject::connect(stdoutflushTimerPtr, &QTimer::timeout, flushQtStderr_f);
+        stderrflushTimerPtr->start(1000);
+    }
+    else
+    {
+        stderrflushTimerPtr->start(1000);
+    }
+}
+
+bool stderrLastCharacterPrintedWasNewLine(true);
+void qtErr_f(const QString& text_par_con)
+{
+    qtStderr_f() << text_par_con;
+    stderrLastCharacterPrintedWasNewLine = text_par_con.endsWith('\n');
+    flushQtStderrTimer_f();
+}
+
+void qtErrLine_f(const QString& text_par_con)
+{
+    QString textTmp(text_par_con);
+    addNewLineToText_f(textTmp);
+    qtStderr_f() << textTmp;
+    stderrLastCharacterPrintedWasNewLine = text_par_con.endsWith('\n');
+    flushQtStderrTimer_f();
 }
 
 QMutex& qtOutMutexRef_glo()
@@ -89,14 +165,15 @@ QString fileTypePath_f(const fileTypes_ec fileType_par_con)
     }
     else
     {
-        resultTmp = appFilePath_f() + "_" + typesToNamesUMap_ext_con.at(fileType_par_con) + typesToExtensionUMap_ext_con.at(fileType_par_con);
+        resultTmp = fileTypeBasePath_f(fileType_par_con) + typesToExtensionUMap_ext_con.at(fileType_par_con);
     }
     return resultTmp;
 }
 
 void locateConfigFilePath_f(
         const QCommandLineParser& commandLineParser_par_con
-        , bool checkFirstArgument_par_con)
+        , bool checkFirstArgument_par_con
+        , bool required_par_con)
 {
     QString configFilePathOrErrorStr;
     bool configFileFound(false);
@@ -113,13 +190,13 @@ void locateConfigFilePath_f(
             {
                 if (configjsonAlternativePathStr.isEmpty())
                 {
-                    configFilePathOrErrorStr.append("Config file path is empty");
+                    configFilePathOrErrorStr.append("\nConfig file path is empty");
                     break;
                 }
 
                 if (not QFile::exists(configjsonAlternativePathStr))
                 {
-                    configFilePathOrErrorStr.append("Config file path doesn't exist " + configjsonAlternativePathStr);
+                    configFilePathOrErrorStr.append("\nConfig file path doesn't exist " + configjsonAlternativePathStr);
                     break;
                 }
                 configFilePathOrErrorStr = configjsonAlternativePathStr;
@@ -130,20 +207,20 @@ void locateConfigFilePath_f(
     }
 
     //--configFile="somePath" case
-    if (not configFileFound and commandLineParser_par_con.isSet("configFile"))
+    if (not configFileFound and (required_par_con or commandLineParser_par_con.isSet("configFile")))
     {
         QString configjsonAlternativePathStr(commandLineParser_par_con.value("configFile"));
         while (true)
         {
             if (configjsonAlternativePathStr.isEmpty())
             {
-                configFilePathOrErrorStr.append("Config file path is empty");
+                configFilePathOrErrorStr.append("\nConfig file path is empty");
                 break;
             }
 
             if (not QFile::exists(configjsonAlternativePathStr))
             {
-                configFilePathOrErrorStr.append("Config file path doesn't exist " + configjsonAlternativePathStr);
+                configFilePathOrErrorStr.append("\nConfig file path doesn't exist " + configjsonAlternativePathStr);
                 break;
             }
             configFilePathOrErrorStr = configjsonAlternativePathStr;
@@ -156,7 +233,7 @@ void locateConfigFilePath_f(
     {
         if (not QFile::exists(fileTypePath_f(fileTypeTmp_constexpr)))
         {
-            configFilePathOrErrorStr.append("Config file path doesn't exist " + fileTypePath_f(fileTypeTmp_constexpr));
+            configFilePathOrErrorStr.append("\nConfig file path doesn't exist " + fileTypePath_f(fileTypeTmp_constexpr));
         }
         else
         {
@@ -164,6 +241,12 @@ void locateConfigFilePath_f(
             configFileFound = true;
         }
     }
+
+    if (required_par_con and not configFileFound)
+    {
+        configFilePathOrErrorStr.append("\nNo --configFile argument provided");
+    }
+
     configFile_ext = {configFilePathOrErrorStr, configFileFound};
 }
 
@@ -173,5 +256,17 @@ std::pair<QString, bool> configFilePath_f()
 }
 
 
+QString fileTypeBasePath_f(const fileTypes_ec fileType_par_con)
+{
+    QString resultTmp;
+    if (fileType_par_con == fileTypes_ec::empty)
+    {
+    }
+    else
+    {
+        resultTmp = appFilePath_f() + "_" + typesToNamesUMap_ext_con.at(fileType_par_con);
+    }
+    return resultTmp;
+}
 
 

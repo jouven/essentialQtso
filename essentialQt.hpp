@@ -15,19 +15,31 @@
 
 extern EXPIMP_ESSENTIALQTSO int returnValue_ext;
 
-//use this to use qtOutRef_ext in a thread-safe way
+//use this to use qtOutRef_ext in a thread-safe way (debug purposes)
 #define QOUT_TS(X) {QMutexLocker qOutLockerTmp(&qtOutMutexRef_glo()); qtOutRef_ext() << X;}
 
-//Connect the stdout to my qout textstream, not thread-safe
-extern EXPIMP_ESSENTIALQTSO QTextStream& qtOutRef_ext();
+
+extern EXPIMP_ESSENTIALQTSO QTextStream& qtStdout_f();
+//print the string to stdout-QTextStream
+//autoflushes after 1s if no more text is outputed using this functions
+extern EXPIMP_ESSENTIALQTSO void qtOut_f(const QString& text_par_con);
+//same as above but adds a newline if necessary at the start, detects if last outputed text already did it (when using this functions only,
+//doesn't detect multiple newline characters at the end/start)
+//autoflushes after 1s if no more text is outputed using this functions
+extern EXPIMP_ESSENTIALQTSO void qtOutLine_f(const QString& text_par_con);
 
 //Connect the stderr to my qerr textstream, not thread-safe
-extern EXPIMP_ESSENTIALQTSO QTextStream& qtErrRef_ext();
+extern EXPIMP_ESSENTIALQTSO QTextStream& qtStderr_f();
+//print the string to stderr-QTextStream
+//autoflushes after 1s if no more text is outputed using this functions
+extern EXPIMP_ESSENTIALQTSO void qtErr_f(const QString& text_par_con);
+//same as above but adds a newline if necessary at the start, detects if last outputed text already did it (when using this functions only,
+//doesn't detect multiple newline characters at the end/start)
+//autoflushes after 1s if no more text is outputed using this functions
+extern EXPIMP_ESSENTIALQTSO void qtErrLine_f(const QString& text_par_con);
 
 //necessary for the QOUT_TS macro
 extern EXPIMP_ESSENTIALQTSO QMutex& qtOutMutexRef_glo();
-
-//extern QTimer* qtCycleRef_ext;
 
 //windows/*nix same as QCoreApplication::applicationDirPath()
 //in android QDir::currentPath(), since the "executable" in android is in a non-writable path
@@ -62,7 +74,8 @@ extern EXPIMP_ESSENTIALQTSO void locateConfigFilePath_f(
         //there is this argument because it can be ambiguous
         //positional arguments might be used for other stuff that might be paths
         //but not the config path
-        , bool checkFirstArgument_par_con);
+        , bool checkFirstArgument_par_con
+        , bool required_par_con);
 
 //if the bool is false, QString is an error message
 //else it's the filePath
