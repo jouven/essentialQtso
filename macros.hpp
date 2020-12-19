@@ -19,4 +19,6 @@
     break; \
 }
 
+#define DEBUGSOURCE QString(strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__) + " (" + QString(__func__) + ") "
+
 #endif // ESSENTIALQTSO_MACROS_HPP
