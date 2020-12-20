@@ -1,5 +1,6 @@
 #message($$QMAKESPEC)
 QT -= gui
+QT += core
 
 TARGET = essentialQtso
 TEMPLATE = lib

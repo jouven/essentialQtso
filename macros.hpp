@@ -21,4 +21,12 @@
 
 #define DEBUGSOURCE QString(strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__) + " (" + QString(__func__) + ") "
 
+#define DEBUGDATETIME QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz ")
+
+#define DEBUGDATETIMEANDSOURCE DEBUGDATETIME + DEBUGSOURCE
+
+#define DEBUGFULL DEBUGDATETIMEANDSOURCE << "line: " << __LINE__ << " "
+
+#define DEBUGFULLEND std::cout << DEBUGFULL << "END\n";
+
 #endif // ESSENTIALQTSO_MACROS_HPP
