@@ -2,7 +2,6 @@
 QT -= gui
 QT += core
 
-TARGET = essentialQtso
 TEMPLATE = lib
 
 !android:QMAKE_CXXFLAGS += -std=c++17
@@ -26,10 +25,14 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs depr
 DEFINES += ESSENTIALQTSO_LIBRARY
 
 SOURCES += \
+    datetime.cpp \
+    enumClass.cpp \
     essentialQt.cpp \
     filenaming.cpp
 
 HEADERS += \
+    datetime.hpp \
+    enumClass.hpp \
     essentialQt.hpp \
     filenaming.hpp \
     macros.hpp \
@@ -37,6 +40,46 @@ HEADERS += \
 
 !win32:MYPATH = "/"
 win32:MYPATH = "H:/veryuseddata/portable/msys64/"
+
+#mine
+INCLUDEPATH += $${MYPATH}home/jouven/mylibs/include
+
+#don't new line the "{"
+#release
+if (!android){
+
+CONFIG(release, debug|release){
+    LIBS += -L$${MYPATH}home/jouven/mylibs/release/
+    DEPENDPATH += $${MYPATH}home/jouven/mylibs/release
+    QMAKE_RPATHDIR += $${MYPATH}home/jouven/mylibs/release
+}
+#debug
+CONFIG(debug, debug|release){
+    LIBS += -L$${MYPATH}home/jouven/mylibs/debug/
+    DEPENDPATH += $${MYPATH}home/jouven/mylibs/debug
+    QMAKE_RPATHDIR += $${MYPATH}home/jouven/mylibs/debug
+    DEFINES += DEBUGJOUVEN
+}
+
+}
+
+if (android){
+#release
+CONFIG(release, debug|release){
+    LIBS += -L$${MYPATH}home/jouven/mylibsAndroid/release/
+    DEPENDPATH += $${MYPATH}home/jouven/mylibsAndroid/release
+    QMAKE_RPATHDIR += $${MYPATH}home/jouven/mylibsAndroid/release
+}
+#debug
+CONFIG(debug, debug|release){
+    LIBS += -L$${MYPATH}home/jouven/mylibsAndroid/debug/
+    DEPENDPATH += $${MYPATH}home/jouven/mylibsAndroid/debug
+    QMAKE_RPATHDIR += $${MYPATH}home/jouven/mylibsAndroid/debug
+    DEFINES += DEBUGJOUVEN
+
+}
+
+}
 
 QMAKE_CXXFLAGS_DEBUG -= -g
 QMAKE_CXXFLAGS_DEBUG += -pedantic -Wall -Wextra -g3

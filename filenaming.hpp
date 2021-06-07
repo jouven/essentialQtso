@@ -6,8 +6,6 @@
 
 #include <QString>
 
-#include <unordered_map>
-
 //just to keep all the apps files the same way
 
 enum class fileTypes_ec
@@ -20,10 +18,10 @@ enum class fileTypes_ec
 };
 
 //values are camelcase
-extern EXPIMP_ESSENTIALQTSO const std::unordered_map<fileTypes_ec, QString> typesToNamesUMap_ext_con;
+extern EXPIMP_ESSENTIALQTSO QString fileTypeToString_f(const fileTypes_ec fileType_par_con);
 
 //extensions start with a dot i.e. ".log"
-extern EXPIMP_ESSENTIALQTSO const std::unordered_map<fileTypes_ec, QString> typesToExtensionUMap_ext_con;
+extern EXPIMP_ESSENTIALQTSO QString fileTypeToExtension_f(const fileTypes_ec fileType_par_con);
 
 #endif // ESSENTIALQTSO_FILENAMING_HPP
 

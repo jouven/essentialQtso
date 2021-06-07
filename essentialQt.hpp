@@ -6,18 +6,20 @@
 
 #include "filenaming.hpp"
 
-#include <QCommandLineParser>
+//#include <QCommandLineParser>
 #include <QTextStream>
 #include <QMutex>
 #include <QMutexLocker>
 
-#include <utility>
+//#include <utility>
 
 extern EXPIMP_ESSENTIALQTSO int returnValue_ext;
 
 //use this to use qtOutRef_ext in a thread-safe way (debug purposes)
-#define QOUT_TS(X) {QMutexLocker qOutLockerTmp(&qtOutMutexRef_glo()); qtOutRef_ext() << X;}
+#define QOUT_TS(X) {QMutexLocker qOutLockerTmp(&qtStdoutMutexRef_glo()); qtStdout_f() << X;}
+#define QERR_TS(X) {QMutexLocker qOutLockerTmp(&qtStderrMutexRef_glo()); qtStderr_f() << X;}
 
+//WARNING the "autoflushing" will only happen if the functions that do it are called from a thread with an execution loop
 
 extern EXPIMP_ESSENTIALQTSO QTextStream& qtStdout_f();
 //print the string to stdout-QTextStream
@@ -38,8 +40,12 @@ extern EXPIMP_ESSENTIALQTSO void qtErr_f(const QString& text_par_con);
 //autoflushes after 1s if no more text is outputed using this functions
 extern EXPIMP_ESSENTIALQTSO void qtErrLine_f(const QString& text_par_con);
 
-//necessary for the QOUT_TS macro
-extern EXPIMP_ESSENTIALQTSO QMutex& qtOutMutexRef_glo();
+//by default the functions above are not threadsafe,
+//except the flusing part because there is timer that controls the automatic flushing that needs to be "protected",
+//these mutexes can be used to make it threadsafe when more than one thread tries to "stream out" at the same time
+extern EXPIMP_ESSENTIALQTSO QMutex& qtStdoutMutexRef_glo();
+
+extern EXPIMP_ESSENTIALQTSO QMutex& qtStderrMutexRef_glo();
 
 //windows/*nix same as QCoreApplication::applicationDirPath()
 //in android QDir::currentPath(), since the "executable" in android is in a non-writable path
@@ -52,8 +58,10 @@ extern EXPIMP_ESSENTIALQTSO QString appDirectoryPath_f();
 //configFileDefaultPath_f uses it
 extern EXPIMP_ESSENTIALQTSO QString appFilePath_f();
 
+extern EXPIMP_ESSENTIALQTSO QString executableName_f();
+
 //return value example: config --> ".json"
-extern EXPIMP_ESSENTIALQTSO QString fileTypeExtension_f(const fileTypes_ec fileType_par_con);
+//extern EXPIMP_ESSENTIALQTSO QString fileTypeExtension_f(const fileTypes_ec fileType_par_con);
 
 //return value example: config --> /a/random/path/applicationname_config
 //extension must be added if required
@@ -69,17 +77,18 @@ extern EXPIMP_ESSENTIALQTSO QString fileTypePath_f(const fileTypes_ec fileType_p
 //2 if checkFirstArgument_par_con = false, it will check for --configFile="somepath"
 //3 otherwise configFileDefaultPath_f will be checked
 //it's NOT check if the file is a valid config file, just checks existence
-extern EXPIMP_ESSENTIALQTSO void locateConfigFilePath_f(
-        const QCommandLineParser& commandLineParser_par_con
-        //there is this argument because it can be ambiguous
-        //positional arguments might be used for other stuff that might be paths
-        //but not the config path
-        , bool checkFirstArgument_par_con
-        , bool required_par_con);
+//TODO remove
+//extern EXPIMP_ESSENTIALQTSO void locateConfigFilePath_f(
+//        const QCommandLineParser& commandLineParser_par_con
+//        //there is this argument because it can be ambiguous
+//        //positional arguments might be used for other stuff that might be paths
+//        //but not the config path
+//        , bool checkFirstArgument_par_con
+//        , bool required_par_con);
 
 //if the bool is false, QString is an error message
 //else it's the filePath
 //if QString is empty, it hasn't been initialized
-extern EXPIMP_ESSENTIALQTSO std::pair<QString, bool> configFilePath_f();
+//extern EXPIMP_ESSENTIALQTSO std::pair<QString, bool> configFilePath_f();
 
 #endif // ESSENTIALQTSO_ESSENTIAL_HPP
