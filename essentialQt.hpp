@@ -72,23 +72,4 @@ extern EXPIMP_ESSENTIALQTSO QString fileTypeBasePath_f(const fileTypes_ec fileTy
 //don't use for multiple file cases, use a combination of fileTypeBasePath_f + X + fileTypeExtension_f
 extern EXPIMP_ESSENTIALQTSO QString fileTypePath_f(const fileTypes_ec fileType_par_con);
 
-//check for the config file (updates configFilePath_f):
-//1 if checkFirstArgument_par_con = true, the first argument will be check if it's a file and exists
-//2 if checkFirstArgument_par_con = false, it will check for --configFile="somepath"
-//3 otherwise configFileDefaultPath_f will be checked
-//it's NOT check if the file is a valid config file, just checks existence
-//TODO remove
-//extern EXPIMP_ESSENTIALQTSO void locateConfigFilePath_f(
-//        const QCommandLineParser& commandLineParser_par_con
-//        //there is this argument because it can be ambiguous
-//        //positional arguments might be used for other stuff that might be paths
-//        //but not the config path
-//        , bool checkFirstArgument_par_con
-//        , bool required_par_con);
-
-//if the bool is false, QString is an error message
-//else it's the filePath
-//if QString is empty, it hasn't been initialized
-//extern EXPIMP_ESSENTIALQTSO std::pair<QString, bool> configFilePath_f();
-
 #endif // ESSENTIALQTSO_ESSENTIAL_HPP

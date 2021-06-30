@@ -164,19 +164,6 @@ QString appFilePath_f()
     return appDirectoryPath_f() + "/" + executableName_f();
 }
 
-//QString fileTypeExtension_f(const fileTypes_ec fileType_par_con)
-//{
-//    QString resultTmp;
-//    if (fileType_par_con == fileTypes_ec::empty)
-//    {
-//    }
-//    else
-//    {
-//        resultTmp = fileTypesToExtension_f(fileType_par_con);
-//    }
-//    return resultTmp;
-//}
-
 QString fileTypePath_f(const fileTypes_ec fileType_par_con)
 {
     QString resultTmp;
@@ -189,92 +176,6 @@ QString fileTypePath_f(const fileTypes_ec fileType_par_con)
     }
     return resultTmp;
 }
-
-//void locateConfigFilePath_f(
-//        const QCommandLineParser& commandLineParser_par_con
-//        , bool checkFirstArgument_par_con
-//        , bool required_par_con)
-//{
-//    QString configFilePathOrErrorStr;
-//    bool configFileFound(false);
-//    constexpr fileTypes_ec fileTypeTmp_constexpr(fileTypes_ec::config);
-
-//    //first argument case
-//    if (checkFirstArgument_par_con)
-//    {
-//        const QStringList parsedPositionalArgs(commandLineParser_par_con.positionalArguments());
-//        if (parsedPositionalArgs.size() > 0)
-//        {
-//            const QString& configjsonAlternativePathStr(parsedPositionalArgs.at(0));
-//            while (true)
-//            {
-//                if (configjsonAlternativePathStr.isEmpty())
-//                {
-//                    configFilePathOrErrorStr.append("\nConfig file path is empty");
-//                    break;
-//                }
-
-//                if (not QFile::exists(configjsonAlternativePathStr))
-//                {
-//                    configFilePathOrErrorStr.append("\nConfig file path doesn't exist " + configjsonAlternativePathStr);
-//                    break;
-//                }
-//                configFilePathOrErrorStr = configjsonAlternativePathStr;
-//                configFileFound = true;
-//                break;
-//            }
-//        }
-//    }
-
-//    //--configFile="somePath" case
-//    if (not configFileFound and (required_par_con or commandLineParser_par_con.isSet("configFile")))
-//    {
-//        QString configjsonAlternativePathStr(commandLineParser_par_con.value("configFile"));
-//        while (true)
-//        {
-//            if (configjsonAlternativePathStr.isEmpty())
-//            {
-//                configFilePathOrErrorStr.append("\nConfig file path is empty");
-//                break;
-//            }
-
-//            if (not QFile::exists(configjsonAlternativePathStr))
-//            {
-//                configFilePathOrErrorStr.append("\nConfig file path doesn't exist " + configjsonAlternativePathStr);
-//                break;
-//            }
-//            configFilePathOrErrorStr = configjsonAlternativePathStr;
-//            configFileFound = true;
-//            break;
-//        }
-//    }
-
-//    if (not configFileFound)
-//    {
-//        if (not QFile::exists(fileTypePath_f(fileTypeTmp_constexpr)))
-//        {
-//            configFilePathOrErrorStr.append("\nConfig file path doesn't exist " + fileTypePath_f(fileTypeTmp_constexpr));
-//        }
-//        else
-//        {
-//            configFilePathOrErrorStr = fileTypePath_f(fileTypeTmp_constexpr);
-//            configFileFound = true;
-//        }
-//    }
-
-//    if (required_par_con and not configFileFound)
-//    {
-//        configFilePathOrErrorStr.append("\nNo --configFile argument provided");
-//    }
-
-//    configFile_ext = {configFilePathOrErrorStr, configFileFound};
-//}
-
-//std::pair<QString, bool> configFilePath_f()
-//{
-//    return configFile_ext;
-//}
-
 
 QString fileTypeBasePath_f(const fileTypes_ec fileType_par_con)
 {
